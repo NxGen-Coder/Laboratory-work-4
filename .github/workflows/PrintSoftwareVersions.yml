@@ -1,0 +1,70 @@
+# Назва воркфлоу
+name: 'Виведення версій ПЗ'
+
+# Тригери запуску
+on:
+  push:
+    branches: [ "main" ] 
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch: # Дозволяє запускати вручну
+
+# Визначення робіт (jobs)
+jobs:
+  # Робота 1: Рівень обробки (BL) - Python/FastAPI
+  processing-level:
+    runs-on: ubuntu-latest # Використовуємо ОС Ubuntu
+
+    steps:
+      # Крок 1: Отримуємо код 
+      - name: 'Checkout коду'
+        uses: actions/checkout@v4
+
+      # Крок 2: Встановлюємо потрібну версію Python
+      - name: 'Встановлення Python 3.10'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Крок 3: Встановлюємо бібліотеки (FastAPI)
+      - name: 'Встановлення FastAPI'
+        run: pip install fastapi uvicorn
+
+      # Крок 4: Виводимо версії ПЗ
+      - name: 'Виведення версій Python та FastAPI'
+        run: |
+          echo "--- Python Version ---"
+          python --version
+          echo "--- FastAPI Version ---"
+          pip show fastapi
+  
+  # Робота 2: Рівень доступу (AL) - PostgreSQL/MongoDB
+  access-level:
+    runs-on: ubuntu-latest # Використовуємо ОС Ubuntu
+
+    steps:
+      # Крок 1: Оновлюємо менеджера пакетів
+      - name: 'Оновлення apt-get'
+        run: sudo apt-get update
+
+      # Крок 2: Встановлюємо клієнт PostgreSQL
+      - name: 'Встановлення клієнта PostgreSQL'
+        run: sudo apt-get install -y postgresql-client
+          
+      # Крок 3: Встановлюємо Python (для pip)
+      - name: 'Встановлення Python 3.10'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Крок 4: Встановлюємо Python-драйвер для MongoDB
+      - name: 'Встановлення pymongo'
+        run: pip install pymongo
+
+      # Крок 5: Виводимо версії клієнтів БД
+      - name: 'Виведення версій клієнтів БД'
+        run: |
+          echo "--- PostgreSQL Client Version ---"
+          psql --version
+          echo "--- MongoDB Driver Version (pymongo) ---"
+          pip show pymongo
