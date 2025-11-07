@@ -159,3 +159,11 @@ CREATE TABLE order_items (
     CHECK (quantity > 0)
 );
 
+-- --- Індекси для прискорення запитів ---
+CREATE INDEX ON scientific_ideas (author_id);
+CREATE INDEX ON scientific_ideas (discussion_id);
+CREATE INDEX ON comments (author_id);
+CREATE INDEX ON comments (discussion_id);
+CREATE INDEX ON comments (idea_id);
+CREATE INDEX ON online_orders (scientist_id);
+CREATE INDEX ON online_orders (manager_id);
