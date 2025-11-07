@@ -66,7 +66,8 @@ CREATE TABLE resources (
     -- Перевірка логіки
     CHECK (
         (resource_type = 'equipment' AND model_number IS NOT NULL)
-        OR (resource_type = 'literature' AND author IS NOT NULL AND publication_year IS NOT NULL)
+        OR (resource_type = 'literature' AND author IS NOT NULL 
+        AND publication_year IS NOT NULL)
     )
 );
 
@@ -167,4 +168,3 @@ CREATE INDEX ON comments (discussion_id);
 CREATE INDEX ON comments (idea_id);
 CREATE INDEX ON online_orders (scientist_id);
 CREATE INDEX ON online_orders (manager_id);
-
