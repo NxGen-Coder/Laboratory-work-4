@@ -30,4 +30,4 @@ jobs:
     # 4. Запускаємо лінтер 
     - name: 'Запуск SQLFluff'
       run: |
-        sqlfluff lint DataSchema.sql --dialect postgres
+        sqlfluff lint DataSchemaModified.sql --dialect postgres
