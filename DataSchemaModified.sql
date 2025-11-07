@@ -102,7 +102,7 @@ CREATE TABLE scientific_ideas (
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
     FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE RESTRICT,
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE
+    REFERENCES online_discussions (discussion_id) ON DELETE CASCADE
 );
 
 -- --- Таблиця: shared_documents ---
@@ -114,7 +114,7 @@ CREATE TABLE shared_documents (
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE,
+    REFERENCES online_discussions (discussion_id) ON DELETE CASCADE,
     CHECK (document_type IN ('PDF', 'DOCX', 'URL', 'Other'))
 );
 
@@ -130,8 +130,10 @@ CREATE TABLE comments (
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
     FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE RESTRICT,
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE,
-    FOREIGN KEY (idea_id) REFERENCES scientific_ideas (idea_id) ON DELETE CASCADE,
+    REFERENCES online_discussions (discussion_id) ON DELETE CASCADE,
+    FOREIGN KEY (idea_id) REFERENCES scientific_ideas (
+        idea_id
+    ) ON DELETE CASCADE,
     CHECK (
         (discussion_id IS NOT NULL AND idea_id IS NULL)
         OR (discussion_id IS NULL AND idea_id IS NOT NULL)
@@ -147,7 +149,7 @@ CREATE TABLE discussion_participants (
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE
+    REFERENCES online_discussions (discussion_id) ON DELETE CASCADE
 );
 
 -- --- Сполучна таблиця: order_items ---
@@ -158,8 +160,12 @@ CREATE TABLE order_items (
     PRIMARY KEY (order_id, resource_id),
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
-    FOREIGN KEY (order_id) REFERENCES online_orders (order_id) ON DELETE CASCADE,
-    FOREIGN KEY (resource_id) REFERENCES resources (resource_id) ON DELETE RESTRICT,
+    FOREIGN KEY (order_id) REFERENCES online_orders (
+        order_id
+    ) ON DELETE CASCADE,
+    FOREIGN KEY (resource_id) REFERENCES resources (
+        resource_id
+    ) ON DELETE RESTRICT,
     CHECK (quantity > 0)
 );
 
