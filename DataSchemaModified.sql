@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS users CASCADE;
 -- --- Таблиця: users ---
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    user_name VARCHAR(255) NOT NULL CHECK (length(user_name) >= 2),
+    user_name VARCHAR(255) NOT NULL CHECK (LENGTH(user_name) >= 2),
     email VARCHAR(255) NOT NULL UNIQUE,
     user_type VARCHAR(50) NOT NULL,
     field_of_study VARCHAR(255),
@@ -37,8 +37,8 @@ CREATE TABLE users (
 -- --- Таблиця: online_discussions ---
 CREATE TABLE online_discussions (
     discussion_id SERIAL PRIMARY KEY,
-    topic VARCHAR(500) NOT NULL CHECK (length(topic) >= 10),
-    creation_date TIMESTAMPTZ NOT NULL DEFAULT current_timestamp
+    topic VARCHAR(500) NOT NULL CHECK (LENGTH(topic) >= 10),
+    creation_date TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- --- Таблиця: resources ---
@@ -60,7 +60,7 @@ CREATE TABLE resources (
         publication_year IS NULL
         OR (
             publication_year >= 1500
-            AND publication_year <= extract(year FROM current_date)
+            AND publication_year <= EXTRACT(YEAR FROM CURRENT_DATE)
         )
     ),
     -- Перевірка логіки (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
@@ -79,13 +79,13 @@ CREATE TABLE online_orders (
     order_id SERIAL PRIMARY KEY,
     scientist_id INTEGER NOT NULL,
     manager_id INTEGER,
-    order_date TIMESTAMPTZ NOT NULL DEFAULT current_timestamp,
+    order_date TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     -- Виправлено: 'status' -> 'order_status'
     order_status VARCHAR(50) NOT NULL DEFAULT 'new',
 
-    -- Обмеження FOREIGN KEY
-    FOREIGN KEY (scientist_id) REFERENCES users(user_id) ON DELETE RESTRICT,
-    FOREIGN KEY (manager_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
+    FOREIGN KEY (scientist_id) REFERENCES users (user_id) ON DELETE RESTRICT,
+    FOREIGN KEY (manager_id) REFERENCES users (user_id) ON DELETE SET NULL,
 
     -- Обмеження CHECK
     CHECK (order_status IN ('new', 'processing', 'confirmed', 'rejected'))
@@ -96,13 +96,13 @@ CREATE TABLE scientific_ideas (
     idea_id SERIAL PRIMARY KEY,
     author_id INTEGER NOT NULL,
     discussion_id INTEGER NOT NULL,
-    description TEXT NOT NULL CHECK (length(description) >= 50), -- ВИПРАВЛЕНО РЕГІСТР
-    submission_date TIMESTAMPTZ NOT NULL DEFAULT current_timestamp, -- ВИПРАВЛЕНО РЕГІСТР
+    description TEXT NOT NULL CHECK (LENGTH(description) >= 50),
+    submission_date TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
-    FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+    FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE RESTRICT,
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions(discussion_id) ON DELETE CASCADE
+        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE
 );
 
 -- --- Таблиця: shared_documents ---
@@ -114,7 +114,7 @@ CREATE TABLE shared_documents (
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions(discussion_id) ON DELETE CASCADE,
+        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE,
     CHECK (document_type IN ('PDF', 'DOCX', 'URL', 'Other'))
 );
 
@@ -124,14 +124,14 @@ CREATE TABLE comments (
     author_id INTEGER NOT NULL,
     discussion_id INTEGER,
     idea_id INTEGER,
-    comment_text TEXT NOT NULL CHECK (length(comment_text) >= 1), -- ВИПРАВЛЕНО РЕГІСТР
-    creation_date TIMESTAMPTZ NOT NULL DEFAULT current_timestamp, -- ВИПРАВЛЕНО РЕГІСТР
+    comment_text TEXT NOT NULL CHECK (LENGTH(comment_text) >= 1),
+    creation_date TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
-    FOREIGN KEY (author_id) REFERENCES users(user_id) ON DELETE RESTRICT,
+    FOREIGN KEY (author_id) REFERENCES users (user_id) ON DELETE RESTRICT,
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions(discussion_id) ON DELETE CASCADE,
-    FOREIGN KEY (idea_id) REFERENCES scientific_ideas(idea_id) ON DELETE CASCADE,
+        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE,
+    FOREIGN KEY (idea_id) REFERENCES scientific_ideas (idea_id) ON DELETE CASCADE,
     CHECK (
         (discussion_id IS NOT NULL AND idea_id IS NULL)
         OR (discussion_id IS NULL AND idea_id IS NOT NULL)
@@ -145,9 +145,9 @@ CREATE TABLE discussion_participants (
     PRIMARY KEY (user_id, discussion_id),
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
     FOREIGN KEY (discussion_id)
-        REFERENCES online_discussions(discussion_id) ON DELETE CASCADE
+        REFERENCES online_discussions (discussion_id) ON DELETE CASCADE
 );
 
 -- --- Сполучна таблиця: order_items ---
@@ -158,8 +158,8 @@ CREATE TABLE order_items (
     PRIMARY KEY (order_id, resource_id),
 
     -- Обмеження FOREIGN KEY (ВИПРАВЛЕНО ФОРМАТУВАННЯ)
-    FOREIGN KEY (order_id) REFERENCES online_orders(order_id) ON DELETE CASCADE,
-    FOREIGN KEY (resource_id) REFERENCES resources(resource_id) ON DELETE RESTRICT,
+    FOREIGN KEY (order_id) REFERENCES online_orders (order_id) ON DELETE CASCADE,
+    FOREIGN KEY (resource_id) REFERENCES resources (resource_id) ON DELETE RESTRICT,
     CHECK (quantity > 0)
 );
 
