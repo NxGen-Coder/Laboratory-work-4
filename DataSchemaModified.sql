@@ -167,3 +167,4 @@ CREATE INDEX ON comments (discussion_id);
 CREATE INDEX ON comments (idea_id);
 CREATE INDEX ON online_orders (scientist_id);
 CREATE INDEX ON online_orders (manager_id);
+
